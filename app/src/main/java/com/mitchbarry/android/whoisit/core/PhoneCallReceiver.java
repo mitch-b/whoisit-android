@@ -11,10 +11,13 @@ import static android.telephony.PhoneStateListener.LISTEN_CALL_STATE;
  * Created by Mitchell on 12/9/13.
  */
 public class PhoneCallReceiver extends WakefulBroadcastReceiver {
+    static PhoneCallListener phoneListener;
     @Override
     public void onReceive(Context context, Intent intent) {
-        PhoneCallListener phoneListener = PhoneCallListener.getPhoneCallListener(context);
-        TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        telephony.listen(phoneListener, LISTEN_CALL_STATE);
+        if (phoneListener == null) {
+            phoneListener = PhoneCallListener.getPhoneCallListener(context);
+            TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            telephony.listen(phoneListener, LISTEN_CALL_STATE);
+        }
     }
 }
