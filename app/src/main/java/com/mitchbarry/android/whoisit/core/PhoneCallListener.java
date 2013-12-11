@@ -2,25 +2,29 @@ package com.mitchbarry.android.whoisit.core;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.media.RingtoneManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.PowerManager;
+import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import com.mitchbarry.android.whoisit.BootstrapApplication;
 
-import java.util.Random;
+import java.io.IOException;
 
 public class PhoneCallListener extends PhoneStateListener {
     private Context context = null;
     private int PREVIOUS_CALL_STATE;
-    private Uri DEFAULT_RINGTONE;
-    private Uri CURRENT_RINGTONE;
+    private static AudioManager audioManager;
+    private static MediaPlayer mediaPlayer;
+    private static int ringVolume = -100;
+    private static int alarmVolume = -100;
     private static PhoneCallListener phoneCallListenerInstance;
 
     public PhoneCallListener(Context context) {
         this.context = context;
-        DEFAULT_RINGTONE = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE);
+        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
     public static PhoneCallListener getPhoneCallListener(Context context)
@@ -35,30 +39,71 @@ public class PhoneCallListener extends PhoneStateListener {
         if (state != PREVIOUS_CALL_STATE) {
             switch (state) {
                 case TelephonyManager.CALL_STATE_IDLE:
-                    Log.d("WhoIsIt", "From talking/ringing to quiet ... revert ringtone to default if changed");
+                    killMediaPlayer();
+                    audioManager.setStreamMute(AudioManager.STREAM_RING, false);
+                    audioManager.setStreamVolume(
+                            AudioManager.STREAM_RING,
+                            ringVolume,
+                            AudioManager.FLAG_ALLOW_RINGER_MODES);
+                    // if this setStreamMute isn't here, for some reason, it fails (silently) to adjust alarm back to volume
+                    // TODO: someone please explain why ...
+                    audioManager.setStreamMute(AudioManager.STREAM_ALARM, false);
+                    audioManager.setStreamVolume(
+                            AudioManager.STREAM_ALARM,
+                            alarmVolume,
+                            AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
                     break;
                 case TelephonyManager.CALL_STATE_OFFHOOK:
-                    Log.d("WhoIsIt", "We're in a call. Tap in for NSA.");
+                    killMediaPlayer();
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
-                    Log.d("WhoIsIt", String.format("Captured call from %s - change ringtone to new (or default if non-matching) one!", incomingNumber));
+                    Log.d("WhoIsIt", String.format("Captured call from %s", incomingNumber));
+                    // save values so I can restore them on STATE_IDLE
+                    alarmVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+                    ringVolume = audioManager.getStreamVolume(AudioManager.STREAM_RING);
+
                     /*
                         Check if incomingNumber fits within user's defined number ranges
                      */
-                    RingtoneManager rm = new RingtoneManager(this.context);
-                    Random random = new Random();
-                    Cursor cursor = rm.getCursor();
-                    int randomRingtone = -1;
-                    int prevRingtonePosition = rm.getRingtonePosition(RingtoneManager.getActualDefaultRingtoneUri(this.context, RingtoneManager.TYPE_RINGTONE));
+                    String contactRingtoneUriString = null;
 
-                    while (cursor != null && cursor.getCount() > 1) {
-                        randomRingtone = random.nextInt(cursor.getCount());
-                        if (randomRingtone != prevRingtonePosition)
-                            break;
+                    Uri contactRingtoneUri = Uri.withAppendedPath(
+                            ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                            Uri.encode(incomingNumber));
+
+                    if (contactRingtoneUri != null) {
+                        String[] projection = new String[] {ContactsContract.PhoneLookup.CUSTOM_RINGTONE};
+                        Cursor customRingCursor = this.context.getContentResolver().query(contactRingtoneUri, projection, null, null, null);
+                        if (customRingCursor != null && customRingCursor.getCount() > 0) {
+                            while (customRingCursor.moveToNext()) {
+                                contactRingtoneUriString = customRingCursor.getString(customRingCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.CUSTOM_RINGTONE));
+                                if (contactRingtoneUriString != null) {
+                                    Log.d("WhoIsIt", "Contact has a custom ringtone: " + contactRingtoneUriString);
+                                    break;
+                                }
+                            }
+                        }
                     }
-
-                    Log.d("WhoIsIt", "prevRingtonePosition = " + prevRingtonePosition + ", new = " + randomRingtone);
-                    RingtoneManager.setActualDefaultRingtoneUri(this.context, RingtoneManager.TYPE_RINGTONE, rm.getRingtoneUri(randomRingtone));
+                    if (contactRingtoneUriString != null) {
+                        try {
+                            mediaPlayer = new MediaPlayer();
+                            // mute current ringtone if any
+                            audioManager.setStreamMute(AudioManager.STREAM_RING, true);
+                            mediaPlayer.setDataSource(this.context, Uri.parse(contactRingtoneUriString));
+                            mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+                            audioManager.setStreamVolume(
+                                    AudioManager.STREAM_ALARM,
+                                    ringVolume,
+                                    AudioManager.FLAG_ALLOW_RINGER_MODES);
+                            mediaPlayer.setWakeMode(this.context, PowerManager.PARTIAL_WAKE_LOCK);
+                            mediaPlayer.setLooping(true);
+                            mediaPlayer.prepare();
+                            mediaPlayer.start();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            audioManager.setStreamMute(AudioManager.STREAM_RING, false);
+                        }
+                    }
                     break;
                 default:
                     break;
@@ -79,6 +124,15 @@ public class PhoneCallListener extends PhoneStateListener {
                 return "RINGING";
             default:
                 return "???";
+        }
+    }
+
+    private void killMediaPlayer() {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying())
+                mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 }
