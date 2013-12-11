@@ -1,11 +1,15 @@
 package com.mitchbarry.android.whoisit.core;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import com.mitchbarry.android.whoisit.BootstrapApplication;
+
+import java.util.Random;
 
 public class PhoneCallListener extends PhoneStateListener {
     private Context context = null;
@@ -27,10 +31,7 @@ public class PhoneCallListener extends PhoneStateListener {
     }
 
     public void onCallStateChanged(int state, String incomingNumber) {
-        /*
-            Check if incomingNumber fits within user's defined number ranges
-         */
-        // if (match) { ... }, otherwise, don't mess with it
+        super.onCallStateChanged(state, incomingNumber);
         if (state != PREVIOUS_CALL_STATE) {
             switch (state) {
                 case TelephonyManager.CALL_STATE_IDLE:
@@ -41,6 +42,23 @@ public class PhoneCallListener extends PhoneStateListener {
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
                     Log.d("WhoIsIt", String.format("Captured call from %s - change ringtone to new (or default if non-matching) one!", incomingNumber));
+                    /*
+                        Check if incomingNumber fits within user's defined number ranges
+                     */
+                    RingtoneManager rm = new RingtoneManager(this.context);
+                    Random random = new Random();
+                    Cursor cursor = rm.getCursor();
+                    int randomRingtone = -1;
+                    int prevRingtonePosition = rm.getRingtonePosition(RingtoneManager.getActualDefaultRingtoneUri(this.context, RingtoneManager.TYPE_RINGTONE));
+
+                    while (cursor != null && cursor.getCount() > 1) {
+                        randomRingtone = random.nextInt(cursor.getCount());
+                        if (randomRingtone != prevRingtonePosition)
+                            break;
+                    }
+
+                    Log.d("WhoIsIt", "prevRingtonePosition = " + prevRingtonePosition + ", new = " + randomRingtone);
+                    RingtoneManager.setActualDefaultRingtoneUri(this.context, RingtoneManager.TYPE_RINGTONE, rm.getRingtoneUri(randomRingtone));
                     break;
                 default:
                     break;
