@@ -6,20 +6,29 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.PowerManager;
+import android.os.Vibrator;
 import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import com.mitchbarry.android.whoisit.db.DatabaseManager;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 public class PhoneCallListener extends PhoneStateListener {
+    private static final String TAG = "PhoneCallListener";
+
     private Context context = null;
     private int PREVIOUS_CALL_STATE;
     private static AudioManager audioManager;
     private static MediaPlayer mediaPlayer;
+    private static Vibrator vibrator;
     private static int ringVolume = -100;
     private static int alarmVolume = -100;
+    private static boolean audioStreamsModified = false;
+    private static boolean vibrateModified = false;
     private static PhoneCallListener phoneCallListenerInstance;
 
     public PhoneCallListener(Context context) {
@@ -40,33 +49,23 @@ public class PhoneCallListener extends PhoneStateListener {
             switch (state) {
                 case TelephonyManager.CALL_STATE_IDLE:
                     killMediaPlayer();
-                    audioManager.setStreamMute(AudioManager.STREAM_RING, false);
-                    audioManager.setStreamVolume(
-                            AudioManager.STREAM_RING,
-                            ringVolume,
-                            AudioManager.FLAG_ALLOW_RINGER_MODES);
-                    // if this setStreamMute isn't here, for some reason, it fails (silently) to adjust alarm back to volume
-                    // TODO: someone please explain why ...
-                    audioManager.setStreamMute(AudioManager.STREAM_ALARM, false);
-                    audioManager.setStreamVolume(
-                            AudioManager.STREAM_ALARM,
-                            alarmVolume,
-                            AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+                    resetAudioStreams();
+                    resetCustomVibrate();
                     break;
                 case TelephonyManager.CALL_STATE_OFFHOOK:
                     killMediaPlayer();
+//                    resetAudioStreams();
+//                    resetCustomVibrate();
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
-                    Log.d("WhoIsIt", String.format("Captured call from %s", incomingNumber));
+                    Log.d(TAG, String.format("Captured call from %s", incomingNumber));
                     // save values so I can restore them on STATE_IDLE
                     alarmVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
                     ringVolume = audioManager.getStreamVolume(AudioManager.STREAM_RING);
+                    PhoneMatch matchedResult = null;
+                    Boolean customRingtoneSet = false;
 
-                    /*
-                        Check if incomingNumber fits within user's defined number ranges
-                     */
-                    String contactRingtoneUriString = null;
-
+                    // if incoming call is from a contact already, no need to check sqlite tables
                     Uri contactRingtoneUri = Uri.withAppendedPath(
                             ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
                             Uri.encode(incomingNumber));
@@ -76,20 +75,46 @@ public class PhoneCallListener extends PhoneStateListener {
                         Cursor customRingCursor = this.context.getContentResolver().query(contactRingtoneUri, projection, null, null, null);
                         if (customRingCursor != null && customRingCursor.getCount() > 0) {
                             while (customRingCursor.moveToNext()) {
-                                contactRingtoneUriString = customRingCursor.getString(customRingCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.CUSTOM_RINGTONE));
-                                if (contactRingtoneUriString != null) {
-                                    Log.d("WhoIsIt", "Contact has a custom ringtone: " + contactRingtoneUriString);
+                                String contactCustomRingtone = customRingCursor.getString(customRingCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.CUSTOM_RINGTONE));
+                                if (contactCustomRingtone != null) {
+                                    Log.d(TAG, "Contact has a custom ringtone: " + contactCustomRingtone);
+                                    customRingtoneSet = true;
                                     break;
                                 }
                             }
                         }
                     }
-                    if (contactRingtoneUriString != null) {
+
+                    // if this # does not already have a custom ringtone, check phone matches
+                    if (!customRingtoneSet) {
+                        /*
+                            Check if incomingNumber fits within user's defined number ranges
+                        */
+                        DatabaseManager.init(context);
+                        List<PhoneMatch> matches = DatabaseManager.getInstance().getPhoneMatches();
+                        if (matches != null) {
+                            for (PhoneMatch match : matches) {
+                                try {
+                                    if (incomingNumber.matches(match.getPattern())) {
+                                        matchedResult = match;
+                                        break;
+                                    }
+                                } catch (PatternSyntaxException pse) {
+                                    Log.e(TAG, "Invalid pattern syntax for match", pse);
+                                }
+                            }
+                        }
+                    }
+
+                    if (matchedResult != null) {
                         try {
+                            audioStreamsModified = true;
+
+                            // if ringtone set
                             mediaPlayer = new MediaPlayer();
                             // mute current ringtone if any
                             audioManager.setStreamMute(AudioManager.STREAM_RING, true);
-                            mediaPlayer.setDataSource(this.context, Uri.parse(contactRingtoneUriString));
+                            mediaPlayer.setDataSource(this.context, Uri.parse(matchedResult.getRingtone()));
                             mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
                             audioManager.setStreamVolume(
                                     AudioManager.STREAM_ALARM,
@@ -99,6 +124,13 @@ public class PhoneCallListener extends PhoneStateListener {
                             mediaPlayer.setLooping(true);
                             mediaPlayer.prepare();
                             mediaPlayer.start();
+
+                            // if vibrate set
+                            //if (matchedResult.getVibrate() != null) {
+//                                if (vibrator == null)
+//                                    vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                                  //vibrator.vibrate((long)400);
+                            //}
                         } catch (IOException e) {
                             e.printStackTrace();
                             audioManager.setStreamMute(AudioManager.STREAM_RING, false);
@@ -108,7 +140,7 @@ public class PhoneCallListener extends PhoneStateListener {
                 default:
                     break;
             }
-            Log.d("WhoIsIt", String.format("%s -> %s", getReadableStateName(PREVIOUS_CALL_STATE), getReadableStateName(state)));
+            Log.d(TAG, String.format("%s -> %s", getReadableStateName(PREVIOUS_CALL_STATE), getReadableStateName(state)));
         }
         PREVIOUS_CALL_STATE = state;
     }
@@ -134,5 +166,30 @@ public class PhoneCallListener extends PhoneStateListener {
             mediaPlayer.release();
             mediaPlayer = null;
         }
+    }
+
+    private void resetAudioStreams() {
+        // audioStreamsModified is only set to true in onCallStateChanged if
+        if (audioStreamsModified) {
+            audioManager.setStreamMute(AudioManager.STREAM_RING, false);
+            audioManager.setStreamVolume(
+                    AudioManager.STREAM_RING,
+                    ringVolume,
+                    AudioManager.FLAG_ALLOW_RINGER_MODES);
+            // if this setStreamMute isn't here, for some reason, it fails (silently) to adjust alarm back to volume
+            // TODO: someone please explain why ...
+            audioManager.setStreamMute(AudioManager.STREAM_ALARM, false);
+            audioManager.setStreamVolume(
+                    AudioManager.STREAM_ALARM,
+                    alarmVolume,
+                    AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        }
+        audioStreamsModified = false;
+    }
+    private void resetCustomVibrate() {
+        if (vibrateModified) {
+            vibrator.cancel();
+        }
+        vibrateModified = false;
     }
 }

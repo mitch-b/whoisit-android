@@ -17,6 +17,9 @@ import android.view.Window;
 import com.mitchbarry.android.whoisit.BootstrapServiceProvider;
 import com.mitchbarry.android.whoisit.R;
 import com.mitchbarry.android.whoisit.core.BootstrapService;
+import com.mitchbarry.android.whoisit.core.PhoneGroup;
+import com.mitchbarry.android.whoisit.core.PhoneMatch;
+import com.mitchbarry.android.whoisit.db.DatabaseManager;
 import com.mitchbarry.android.whoisit.util.SafeAsyncTask;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -86,6 +89,14 @@ public class CarouselActivity extends BootstrapFragmentActivity {
 
         checkAuth();
 
+        DatabaseManager.init(this);
+        if (DatabaseManager.getInstance().getPhoneGroups().size() == 0) {
+            PhoneGroup group = new PhoneGroup();
+            group.setName("ConAgra");
+            PhoneMatch match = new PhoneMatch(group, "402522.*", "content://media/internal/audio/media/85", null);
+            DatabaseManager.getInstance().addPhoneGroup(group);
+            DatabaseManager.getInstance().addPhoneMatch(match);
+        }
     }
 
     @Override

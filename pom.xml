@@ -11,7 +11,7 @@
     <packaging>pom</packaging>
 
     <issueManagement>
-        <url>https://github.com.mitchbarry.android.whoisit/issues</url>
+        <url>https://github.com/mitch-b/whoisit-android/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
 
@@ -24,17 +24,17 @@
     </licenses>
 
     <scm>
-        <url>https://github.com.mitchbarry.android.whoisit</url>
-        <connection>scm:git:git://github.com.mitchbarry.android.whoisit.git</connection>
-        <developerConnection>scm:git:git@github.com.mitchbarry.android.whoisit.git</developerConnection>
+        <url>https://github.com/mitch-b/whoisit-android</url>
+        <connection>scm:git:git://github.com/mitch-b/whoisit-android.git</connection>
+        <developerConnection>scm:git:git@github.com/mitch-b/whoisit-android.git</developerConnection>
     </scm>
 
     <developers>
         <developer>
-            <email>donn@donnfelker.com</email>
-            <name>Donn Felker</name>
-            <url>https://github.com/donnfelker</url>
-            <id>donnfelker</id>
+            <email>mitch.barry@gmail.com</email>
+            <name>Mitchell Barry</name>
+            <url>https://github.com/mitch-b</url>
+            <id>mitch-b</id>
         </developer>
     </developers>
 
