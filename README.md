@@ -32,3 +32,5 @@ Not that logging in is essential to making the app work, because I've made no UI
 Issues?
 --------------
 Please submit any issues in Github's [Issue Tracker](http://github.com/mitch-b/whoisit-android/issues).
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/mitch-b/whoisit-android/trend.png)](https://bitdeli.com/free "Bitdeli Badge")

@@ -5,7 +5,6 @@ import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
-import com.mitchbarry.android.whoisit.BootstrapApplication;
 import com.mitchbarry.android.whoisit.util.Ln;
 import com.mitchbarry.android.whoisit.util.Strings;
 

@@ -5,13 +5,14 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Mitchell on 12/12/13.
  */
 @DatabaseTable(tableName = "phoneGroups")
-public class PhoneGroup {
+public class PhoneGroup implements Serializable {
     public static final String NAME_FIELD_NAME = "name";
 
     @DatabaseField(generatedId = true)

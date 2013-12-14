@@ -6,11 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
-import com.mitchbarry.android.whoisit.core.BootstrapService;
-import com.mitchbarry.android.whoisit.core.CheckIn;
-import com.mitchbarry.android.whoisit.core.News;
-import com.mitchbarry.android.whoisit.core.User;
-import com.mitchbarry.android.whoisit.core.UserAgentProvider;
+import com.mitchbarry.android.whoisit.core.*;
+import com.mitchbarry.android.whoisit.core.WhoIsItService;
 import com.github.kevinsawicki.http.HttpRequest;
 
 import java.io.BufferedReader;
@@ -26,7 +23,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * Unit tests of {@link com.mitchbarry.android.whoisit.core.BootstrapService}
+ * Unit tests of {@link com.mitchbarry.android.whoisit.core.WhoIsItService}
  */
 @RunWith(MockitoJUnitRunner.class)
 public class BootstrapServiceTest {
@@ -46,7 +43,7 @@ public class BootstrapServiceTest {
     @Mock
     private HttpRequest request;
 
-    private BootstrapService service;
+    private WhoIsItService service;
 
     /**
      * Set up default mocks
@@ -55,7 +52,7 @@ public class BootstrapServiceTest {
      */
     @Before
     public void before() throws IOException {
-        service = new BootstrapService("foo", new UserAgentProvider()) {
+        service = new WhoIsItService("foo", new UserAgentProvider()) {
             protected HttpRequest execute(HttpRequest request) throws IOException {
                 return BootstrapServiceTest.this.request;
             }

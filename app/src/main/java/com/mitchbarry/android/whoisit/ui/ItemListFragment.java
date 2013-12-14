@@ -24,7 +24,6 @@ import android.widget.TextView;
 import com.mitchbarry.android.whoisit.R;
 import com.mitchbarry.android.whoisit.R.id;
 import com.mitchbarry.android.whoisit.R.layout;
-import com.mitchbarry.android.whoisit.authenticator.LogoutService;
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 import com.github.kevinsawicki.wishlist.Toaster;
 import com.github.kevinsawicki.wishlist.ViewUtils;
@@ -159,25 +158,9 @@ public abstract class ItemListFragment<E> extends Fragment
         case id.refresh:
             forceRefresh();
             return true;
-        case R.id.logout:
-            logout();
-            return true;
         default:
             return super.onOptionsItemSelected(item);
         }
-    }
-
-    abstract LogoutService getLogoutService();
-
-    private void logout() {
-        getLogoutService().logout(new Runnable() {
-            @Override
-            public void run() {
-                // Calling a refresh will force the service to look for a logged in user
-                // and when it finds none the user will be requested to log in again.
-                forceRefresh();
-            }
-        });
     }
 
     /**

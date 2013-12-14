@@ -10,19 +10,17 @@ import android.content.Context;
 
 import com.github.kevinsawicki.http.HttpRequest;
 
-import dagger.ObjectGraph;
-
 /**
  * Who Is It application
  */
-public class BootstrapApplication extends Application {
+public class WhoIsItApplication extends Application {
 
-    private static BootstrapApplication instance;
+    private static WhoIsItApplication instance;
 
     /**
      * Create main application
      */
-    public BootstrapApplication() {
+    public WhoIsItApplication() {
 
         // Disable http.keepAlive on Froyo and below
         if (SDK_INT <= FROYO)
@@ -34,7 +32,7 @@ public class BootstrapApplication extends Application {
      *
      * @param context
      */
-    public BootstrapApplication(final Context context) {
+    public WhoIsItApplication(final Context context) {
         this();
         attachBaseContext(context);
 
@@ -61,12 +59,12 @@ public class BootstrapApplication extends Application {
      *
      * @param instrumentation
      */
-    public BootstrapApplication(final Instrumentation instrumentation) {
+    public WhoIsItApplication(final Instrumentation instrumentation) {
         this();
         attachBaseContext(instrumentation.getTargetContext());
     }
 
-    public static BootstrapApplication getInstance() {
+    public static WhoIsItApplication getInstance() {
         return instance;
     }
 }

@@ -2,7 +2,6 @@
 
 package com.mitchbarry.android.whoisit.ui;
 
-import android.accounts.OperationCanceledException;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,16 +13,11 @@ import android.view.View;
 import android.view.Window;
 
 
-import com.mitchbarry.android.whoisit.BootstrapServiceProvider;
 import com.mitchbarry.android.whoisit.R;
-import com.mitchbarry.android.whoisit.core.BootstrapService;
 import com.mitchbarry.android.whoisit.core.PhoneGroup;
 import com.mitchbarry.android.whoisit.core.PhoneMatch;
 import com.mitchbarry.android.whoisit.db.DatabaseManager;
-import com.mitchbarry.android.whoisit.util.SafeAsyncTask;
 import com.viewpagerindicator.TitlePageIndicator;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.Views;
@@ -36,10 +30,6 @@ public class CarouselActivity extends BootstrapFragmentActivity {
 
     @InjectView(R.id.tpi_header) TitlePageIndicator indicator;
     @InjectView(R.id.vp_pages) ViewPager pager;
-
-    @Inject BootstrapServiceProvider serviceProvider;
-
-    private boolean userHasAuthenticated = false;
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -87,7 +77,7 @@ public class CarouselActivity extends BootstrapFragmentActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        checkAuth();
+        initScreen();
 
         DatabaseManager.init(this);
         if (DatabaseManager.getInstance().getPhoneGroups().size() == 0) {
@@ -115,64 +105,21 @@ public class CarouselActivity extends BootstrapFragmentActivity {
 
 
     private void initScreen() {
-        if(userHasAuthenticated) {
-            pager.setAdapter(new BootstrapPagerAdapter(getResources(), getSupportFragmentManager()));
+        pager.setAdapter(new BootstrapPagerAdapter(getResources(), getSupportFragmentManager()));
 
-            indicator.setViewPager(pager);
-            pager.setCurrentItem(1);
-
-        }
+        indicator.setViewPager(pager);
+        pager.setCurrentItem(1);
 
         setNavListeners();
     }
 
-    private void checkAuth() {
-        new SafeAsyncTask<Boolean>() {
-
-            @Override
-            public Boolean call() throws Exception {
-                    final BootstrapService svc = serviceProvider.getService(CarouselActivity.this);
-                    return svc != null;
-
-            }
-
-            @Override
-            protected void onException(Exception e) throws RuntimeException {
-                super.onException(e);
-                if(e instanceof OperationCanceledException) {
-                    // User cancelled the authentication process (back button, etc).
-                    // Since auth could not take place, lets finish this activity.
-                    finish();
-                }
-            }
-
-            @Override
-            protected void onSuccess(Boolean hasAuthenticated) throws Exception {
-                super.onSuccess(hasAuthenticated);
-                userHasAuthenticated = true;
-                initScreen();
-            }
-        }.execute();
-    }
-
-
     private void setNavListeners() {
-
         findViewById(R.id.menu_item_home).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mDrawerLayout.closeDrawers();
             }
         });
-
-        findViewById(R.id.menu_item_timer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawerLayout.closeDrawers();
-                navigateToTimer();
-            }
-        });
-
     }
 
     @Override
@@ -184,18 +131,9 @@ public class CarouselActivity extends BootstrapFragmentActivity {
 
         switch(item.getItemId()) {
             case android.R.id.home:
-                //menuDrawer.toggleMenu();
-                return true;
-            case R.id.timer:
-                navigateToTimer();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void navigateToTimer() {
-        final Intent i = new Intent(this, BootstrapTimerActivity.class);
-        startActivity(i);
     }
 }

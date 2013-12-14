@@ -6,8 +6,10 @@ package com.mitchbarry.android.whoisit.core;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
+
 @DatabaseTable(tableName = "phoneMatches")
-public class PhoneMatch {
+public class PhoneMatch implements Serializable {
     public static final String GROUP_ID_FIELD_NAME = "groupId";
     public static final String PATTERN_FIELD_NAME = "pattern";
     public static final String RINGTONE_FIELD_NAME = "ringtone";

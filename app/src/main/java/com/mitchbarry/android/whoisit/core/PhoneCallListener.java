@@ -87,9 +87,6 @@ public class PhoneCallListener extends PhoneStateListener {
 
                     // if this # does not already have a custom ringtone, check phone matches
                     if (!customRingtoneSet) {
-                        /*
-                            Check if incomingNumber fits within user's defined number ranges
-                        */
                         DatabaseManager.init(context);
                         List<PhoneMatch> matches = DatabaseManager.getInstance().getPhoneMatches();
                         if (matches != null) {
@@ -124,13 +121,6 @@ public class PhoneCallListener extends PhoneStateListener {
                             mediaPlayer.setLooping(true);
                             mediaPlayer.prepare();
                             mediaPlayer.start();
-
-                            // if vibrate set
-                            //if (matchedResult.getVibrate() != null) {
-//                                if (vibrator == null)
-//                                    vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                                  //vibrator.vibrate((long)400);
-                            //}
                         } catch (IOException e) {
                             e.printStackTrace();
                             audioManager.setStreamMute(AudioManager.STREAM_RING, false);
@@ -140,7 +130,6 @@ public class PhoneCallListener extends PhoneStateListener {
                 default:
                     break;
             }
-            Log.d(TAG, String.format("%s -> %s", getReadableStateName(PREVIOUS_CALL_STATE), getReadableStateName(state)));
         }
         PREVIOUS_CALL_STATE = state;
     }

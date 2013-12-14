@@ -21,20 +21,20 @@ public class CapitalizedTextView extends Button {
 
     public CapitalizedTextView(Context context) {
         super( context );
-
-        setTF( context );
+        if (!isInEditMode())
+            setTF( context );
     }
 
     public CapitalizedTextView(Context context, AttributeSet attrs) {
         super( context, attrs );
-
-        setTF(context);
+        if (!isInEditMode())
+            setTF(context);
     }
 
     public CapitalizedTextView(Context context, AttributeSet attrs, int defStyle) {
         super( context, attrs, defStyle );
-
-        setTF(context);
+        if (!isInEditMode())
+            setTF(context);
 
     }
 
@@ -55,6 +55,5 @@ public class CapitalizedTextView extends Button {
     private void setTF(Context context) {
         setTypeface( Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Regular.ttf") );
     }
-
 
 }

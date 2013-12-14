@@ -30,7 +30,7 @@ public class AndroidModule {
     @Singleton
     Context provideAppContext()
     {
-        return BootstrapApplication.getInstance().getApplicationContext();
+        return WhoIsItApplication.getInstance().getApplicationContext();
     }
 
     @Provides

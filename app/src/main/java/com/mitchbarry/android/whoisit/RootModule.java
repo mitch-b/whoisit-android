@@ -9,7 +9,7 @@ import dagger.Module;
 (
     includes = {
             AndroidModule.class,
-            BootstrapModule.class
+            WhoIsItModule.class
     }
 )
 public class RootModule {
