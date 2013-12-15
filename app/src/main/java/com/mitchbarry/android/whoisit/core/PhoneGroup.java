@@ -14,11 +14,17 @@ import java.util.List;
 @DatabaseTable(tableName = "phoneGroups")
 public class PhoneGroup implements Serializable {
     public static final String NAME_FIELD_NAME = "name";
+    public static final String RINGTONE_FIELD_NAME = "ringtone";
+    public static final String VIBRATE_FIELD_NAME = "vibrate";
 
     @DatabaseField(generatedId = true)
     private int id;
     @DatabaseField(columnName = NAME_FIELD_NAME, canBeNull = false, unique = true)
     private String name;
+    @DatabaseField(columnName = RINGTONE_FIELD_NAME, canBeNull = true)
+    private String ringtone;
+    @DatabaseField(columnName = VIBRATE_FIELD_NAME, canBeNull = true)
+    private String vibrate;
     @ForeignCollectionField(eager = true)
     ForeignCollection<PhoneMatch> matches;
 
@@ -26,7 +32,7 @@ public class PhoneGroup implements Serializable {
         // no-arg constructor required by ORMLite
     }
 
-    public PhoneGroup(String name, List<PhoneMatch> matches) {
+    public PhoneGroup(String name) {
         this.name = name;
     }
 
@@ -44,6 +50,22 @@ public class PhoneGroup implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getRingtone() {
+        return ringtone;
+    }
+
+    public void setRingtone(String ringtone) {
+        this.ringtone = ringtone;
+    }
+
+    public String getVibrate() {
+        return vibrate;
+    }
+
+    public void setVibrate(String vibrate) {
+        this.vibrate = vibrate;
     }
 
     public ForeignCollection<PhoneMatch> getMatches() {

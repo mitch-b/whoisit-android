@@ -1,9 +1,6 @@
 package com.mitchbarry.android.whoisit;
 
-import com.mitchbarry.android.whoisit.ui.AboutActivity;
-import com.mitchbarry.android.whoisit.ui.CarouselActivity;
-import com.mitchbarry.android.whoisit.ui.PhoneGroupActivity;
-import com.mitchbarry.android.whoisit.ui.PhoneGroupListFragment;
+import com.mitchbarry.android.whoisit.ui.*;
 import com.squareup.otto.Bus;
 
 import javax.inject.Singleton;

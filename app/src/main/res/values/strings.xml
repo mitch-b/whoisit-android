@@ -12,6 +12,17 @@
     <string name="error_loading_phone_groups">Loading phone groups failed</string>
     <string name="no_phone_groups">No Phone Groups</string>
 
+    <!-- modify Phone Group strings -->
+    <string name="phone_group_name_label">Name</string>
+    <string name="phone_group_name_hint">Phone Group</string>
+    <string name="phone_matches_label">Phone Number Matches</string>
+    <string name="btn_add_match">Add Match</string>
+    <string name="no_phone_matches">No Phone Matches</string>
+
+    <!-- dialog_add_match_view -->
+    <string name="add_match_message">Add a new match here. To place a wildcard, use an asterisk: *. Phone numbers are matched on sample: 8005551234 (800–555–1234)</string>
+    <string name="add_match_hint">800555*</string>
+
     <string name="about">About</string>
     <string name="home">Home</string>
     <string name="drawer_open">Drawer Open</string>

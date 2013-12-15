@@ -11,6 +11,7 @@ import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import com.j256.ormlite.dao.ForeignCollection;
 import com.mitchbarry.android.whoisit.db.DatabaseManager;
 
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class PhoneCallListener extends PhoneStateListener {
                     // save values so I can restore them on STATE_IDLE
                     alarmVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
                     ringVolume = audioManager.getStreamVolume(AudioManager.STREAM_RING);
-                    PhoneMatch matchedResult = null;
+                    PhoneGroup matchedGroup = null;
                     Boolean customRingtoneSet = false;
 
                     // if incoming call is from a contact already, no need to check sqlite tables
@@ -84,22 +85,29 @@ public class PhoneCallListener extends PhoneStateListener {
                     // if this # does not already have a custom ringtone, check phone matches
                     if (!customRingtoneSet) {
                         DatabaseManager.init(context);
-                        List<PhoneMatch> matches = DatabaseManager.getInstance().getPhoneMatches();
-                        if (matches != null) {
-                            for (PhoneMatch match : matches) {
-                                try {
-                                    if (incomingNumber.matches(match.getPattern())) {
-                                        matchedResult = match;
-                                        break;
+                        List<PhoneGroup> groups = DatabaseManager.getInstance().getPhoneGroups();
+                        if (groups != null) {
+                            for (PhoneGroup group : groups) {
+                                ForeignCollection<PhoneMatch> matches = group.getMatches();
+                                if (matches.size() > 0) {
+                                    for (PhoneMatch match : matches) {
+                                        try {
+                                            if (incomingNumber.matches(match.getPattern())) {
+                                                matchedGroup = group;
+                                                break;
+                                            }
+                                        } catch (PatternSyntaxException pse) {
+                                            Log.e(TAG, "Invalid pattern syntax for match", pse);
+                                        }
                                     }
-                                } catch (PatternSyntaxException pse) {
-                                    Log.e(TAG, "Invalid pattern syntax for match", pse);
                                 }
+                                if (matchedGroup != null)
+                                    break;
                             }
                         }
                     }
 
-                    if (matchedResult != null) {
+                    if (matchedGroup != null) {
                         try {
                             audioStreamsModified = true;
 
@@ -107,7 +115,7 @@ public class PhoneCallListener extends PhoneStateListener {
                             mediaPlayer = new MediaPlayer();
                             // mute current ringtone if any
                             audioManager.setStreamMute(AudioManager.STREAM_RING, true);
-                            mediaPlayer.setDataSource(this.context, Uri.parse(matchedResult.getRingtone()));
+                            mediaPlayer.setDataSource(this.context, Uri.parse(matchedGroup.getRingtone()));
                             mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
                             audioManager.setStreamVolume(
                                     AudioManager.STREAM_ALARM,

@@ -23,6 +23,7 @@ import com.viewpagerindicator.TitlePageIndicator;
 import butterknife.InjectView;
 import butterknife.Views;
 
+import static com.mitchbarry.android.whoisit.core.Constants.Extra.PHONE_GROUP;
 
 /**
  * Activity to view the carousel and view pager indicator with fragments.
@@ -83,8 +84,10 @@ public class CarouselActivity extends BootstrapFragmentActivity {
         DatabaseManager.init(this);
         if (DatabaseManager.getInstance().getPhoneGroups().size() == 0) {
             PhoneGroup group = new PhoneGroup();
-            group.setName("ConAgra");
-            PhoneMatch match = new PhoneMatch(group, "402522.*", "content://media/internal/audio/media/85", null);
+            group.setName("Group 1");
+            group.setRingtone("content://media/internal/audio/media/85");
+            group.setVibrate(null);
+            PhoneMatch match = new PhoneMatch(group, "402522.*");
             DatabaseManager.getInstance().addPhoneGroup(group);
             DatabaseManager.getInstance().addPhoneMatch(match);
         }
@@ -138,7 +141,7 @@ public class CarouselActivity extends BootstrapFragmentActivity {
             case android.R.id.home:
                 return true;
             case R.id.add_phone_group:
-                Toast.makeText(this, "Add Phone Group", Toast.LENGTH_SHORT).show();
+                navigateToModifyPhoneGroup(null);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -148,5 +151,8 @@ public class CarouselActivity extends BootstrapFragmentActivity {
     private void navigateToAbout() {
         final Intent i = new Intent(this, AboutActivity.class);
         startActivity(i);
+    }
+    private void navigateToModifyPhoneGroup(PhoneGroup group) {
+        startActivity(new Intent(this, PhoneGroupActivity.class).putExtra(PHONE_GROUP, group));
     }
 }

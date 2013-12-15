@@ -64,16 +64,16 @@ public class DatabaseManager {
         }
         return phoneMatches;
     }
-    public void addPhoneMatch(PhoneMatch group) {
+    public void addPhoneMatch(PhoneMatch match) {
         try {
-            getHelper().getPhoneMatchDao().create(group);
+            getHelper().getPhoneMatchDao().create(match);
         } catch (SQLException sqle) {
             Log.e(TAG, "Error when creating PhoneMatch", sqle);
         }
     }
-    public void deletePhoneMatch(PhoneMatch group) {
+    public void deletePhoneMatch(PhoneMatch match) {
         try {
-            getHelper().getPhoneMatchDao().delete(group);
+            getHelper().getPhoneMatchDao().delete(match);
         } catch (SQLException sqle) {
             Log.e(TAG, "Error when deleting PhoneMatch", sqle);
         }

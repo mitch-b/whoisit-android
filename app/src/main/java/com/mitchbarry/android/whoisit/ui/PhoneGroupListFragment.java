@@ -33,7 +33,6 @@ public class PhoneGroupListFragment  extends ItemListFragment<PhoneGroup> {
 
         setEmptyText(R.string.no_phone_groups);
 
-
     }
 
     @Override
