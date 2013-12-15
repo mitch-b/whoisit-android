@@ -24,6 +24,7 @@ import dagger.Provides;
                 PhoneGroupActivity.class,
                 PhoneGroupListFragment.class
         },
+
         library = true
 
 )

@@ -1,7 +1,6 @@
 package com.mitchbarry.android.whoisit.ui;
 
 import static com.mitchbarry.android.whoisit.core.Constants.Extra.PHONE_GROUP;
-import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import com.mitchbarry.android.whoisit.core.PhoneGroup;
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 import com.mitchbarry.android.whoisit.db.DatabaseManager;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
