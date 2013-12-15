@@ -13,9 +13,10 @@ Open IntelliJ IDEA (or Android Studio), choose 'Open Project', and navigate to t
 
 This project also uses:
 
-- [Gradle 1.6](http://services.gradle.org/distributions/gradle-1.6-bin.zip) builds.
+- [Gradle](http://gradle.org/) builds.
 - Android minSdkVersion 8
 - Android targetSdkVersion 18
+- Android Build Tools 19
 
 If you have gradle installed, and your Android SDKs downloaded, you should be able to build & run the application either on a connected USB device, or the emulator (untested).
 
