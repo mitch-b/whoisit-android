@@ -9,6 +9,8 @@ buildscript {
     }
 }
 apply plugin: 'android'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
 
 repositories {
     maven { url 'https://github.com/donnfelker/mvn-repo/raw/master/' }
@@ -32,8 +34,7 @@ dependencies {
     compile 'com.j256.ormlite:ormlite-android:4.47'
     compile 'com.j256.ormlite:ormlite-core:4.47'
 
-    instrumentTestCompile 'junit:junit:4.11+'
-    instrumentTestCompile 'org.mockito:mockito-core:1.9.5'
+    instrumentTestCompile 'junit:junit:4.11'
 }
 
 android {
