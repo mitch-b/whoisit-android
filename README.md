@@ -35,5 +35,3 @@ Please submit any issues in Github's [Issue Tracker](http://github.com/mitch-b/w
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/mitch-b/whoisit-android/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/mitch-b/whoisit-android/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
