@@ -1,5 +1,6 @@
 whoisit-android
 ===============
+[![Build Status](https://travis-ci.org/mitch-b/whoisit-android.png?branch=master)](https://travis-ci.org/mitch-b/whoisit-android)
 
 Android application to modify Ringtone based on which number is calling.
 
