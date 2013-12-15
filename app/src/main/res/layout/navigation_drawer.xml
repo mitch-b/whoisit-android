@@ -29,8 +29,9 @@
     <com.mitchbarry.android.whoisit.ui.view.CapitalizedTextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/menu_item_timer"
+            android:id="@+id/menu_item_about"
             android:text="@string/about"
+            android:drawableLeft="@drawable/ic_action_about"
             style="@style/NavMenuButton"
             android:paddingLeft="10dp"
             android:gravity="left|center_vertical"

@@ -1,5 +1,6 @@
 package com.mitchbarry.android.whoisit;
 
+import com.mitchbarry.android.whoisit.ui.AboutActivity;
 import com.mitchbarry.android.whoisit.ui.CarouselActivity;
 import com.mitchbarry.android.whoisit.ui.PhoneGroupActivity;
 import com.mitchbarry.android.whoisit.ui.PhoneGroupListFragment;
@@ -22,7 +23,8 @@ import dagger.Provides;
                 WhoIsItApplication.class,
                 CarouselActivity.class,
                 PhoneGroupActivity.class,
-                PhoneGroupListFragment.class
+                PhoneGroupListFragment.class,
+                AboutActivity.class
         },
 
         library = true

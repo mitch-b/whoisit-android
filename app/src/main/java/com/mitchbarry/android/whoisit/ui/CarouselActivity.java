@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 
 
+import android.widget.Toast;
 import com.mitchbarry.android.whoisit.R;
 import com.mitchbarry.android.whoisit.core.PhoneGroup;
 import com.mitchbarry.android.whoisit.core.PhoneMatch;
@@ -120,6 +121,10 @@ public class CarouselActivity extends BootstrapFragmentActivity {
                 mDrawerLayout.closeDrawers();
             }
         });
+        findViewById(R.id.menu_item_about).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { mDrawerLayout.closeDrawers(); navigateToAbout(); }
+        });
     }
 
     @Override
@@ -132,8 +137,16 @@ public class CarouselActivity extends BootstrapFragmentActivity {
         switch(item.getItemId()) {
             case android.R.id.home:
                 return true;
+            case R.id.add_phone_group:
+                Toast.makeText(this, "Add Phone Group", Toast.LENGTH_SHORT).show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void navigateToAbout() {
+        final Intent i = new Intent(this, AboutActivity.class);
+        startActivity(i);
     }
 }

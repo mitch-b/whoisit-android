@@ -37,6 +37,7 @@
 
 
         <activity android:name=".ui.PhoneGroupActivity" android:label="@string/app_name" />
+        <activity android:name=".ui.AboutActivity" android:label="@string/about" />
 
         <receiver android:name=".core.PhoneCallReceiver">
             <intent-filter>
