@@ -31,7 +31,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/menu_item_timer"
             android:text="@string/about"
-            android:drawableLeft="@drawable/ic_timer"
             style="@style/NavMenuButton"
             android:paddingLeft="10dp"
             android:gravity="left|center_vertical"
