@@ -54,11 +54,8 @@ public class PhoneCallListener extends PhoneStateListener {
                     break;
                 case TelephonyManager.CALL_STATE_OFFHOOK:
                     killMediaPlayer();
-//                    resetAudioStreams();
-//                    resetCustomVibrate();
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
-                    Log.d(TAG, String.format("Captured call from %s", incomingNumber));
                     // save values so I can restore them on STATE_IDLE
                     alarmVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
                     ringVolume = audioManager.getStreamVolume(AudioManager.STREAM_RING);
@@ -77,7 +74,6 @@ public class PhoneCallListener extends PhoneStateListener {
                             while (customRingCursor.moveToNext()) {
                                 String contactCustomRingtone = customRingCursor.getString(customRingCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.CUSTOM_RINGTONE));
                                 if (contactCustomRingtone != null) {
-                                    Log.d(TAG, "Contact has a custom ringtone: " + contactCustomRingtone);
                                     customRingtoneSet = true;
                                     break;
                                 }

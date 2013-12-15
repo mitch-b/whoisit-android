@@ -2,12 +2,12 @@
 
 <resources>
 
+    <color name="main_brand_green">#99CC00</color>
     <color name="text">#FCFCFC</color>
     <color name="text_light">#999999</color>
     <color name="text_inverted">#FFFFFF</color>
     <color name="text_title">#DFDFDF</color>
     <color name="pager_footer">#1fb6ed</color>
-    <color name="pager_selected_text">#FFFFFF</color>
     <color name="pager_background">#F4F4F4</color>
     <color name="pager_background_alternate">#E7E7E7</color>
     <color name="text_link">#1fb6ed</color>
@@ -17,8 +17,6 @@
     <color name="table_text_header">#636363</color>
     <color name="header_background_start">#ECECEC</color>
     <color name="header_background_end">#C3C3C3</color>
-    <color name="header_background_top">#F9F9F9</color>
-    <color name="header_background_bottom">#A7A7A7</color>
     <color name="actionbar_background_start">#272727</color>
     <color name="actionbar_background_end">#1A1A1A</color>
     <color name="bootstrap_divider_top">#000000</color>
