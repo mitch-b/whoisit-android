@@ -92,7 +92,7 @@ public class PhoneCallListener extends PhoneStateListener {
                                 if (matches.size() > 0) {
                                     for (PhoneMatch match : matches) {
                                         try {
-                                            if (incomingNumber.matches(match.getPattern())) {
+                                            if (incomingNumber.matches(match.getPattern().replace("*", ".*"))) {
                                                 matchedGroup = group;
                                                 break;
                                             }

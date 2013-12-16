@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,8 @@ import com.mitchbarry.android.whoisit.core.PhoneGroup;
 import butterknife.InjectView;
 import com.mitchbarry.android.whoisit.core.PhoneMatch;
 import com.mitchbarry.android.whoisit.db.DatabaseManager;
+
+import java.util.ArrayList;
 
 public class PhoneGroupActivity extends BootstrapActivity implements View.OnClickListener {
     public static final String TAG = "PhoneGroupActivity";
@@ -48,9 +51,22 @@ public class PhoneGroupActivity extends BootstrapActivity implements View.OnClic
         setupViews();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (phoneGroup != null) {
+            phoneGroup.setName(name.getText().toString());
+            DatabaseManager.getInstance().updatePhoneGroup(phoneGroup);
+        } else { 
+            phoneGroup = new PhoneGroup(name.getText().toString());
+            DatabaseManager.getInstance().addPhoneGroup(phoneGroup);
+        }
+    }
+
     private void setupViews() {
         if (phoneGroup != null) {
             name.setText(phoneGroup.getName());
+            list_matches.setAdapter(new PhoneMatchListAdapter(this.getLayoutInflater(), new ArrayList<PhoneMatch>(phoneGroup.getMatches())));
         }
     }
 
@@ -67,8 +83,11 @@ public class PhoneGroupActivity extends BootstrapActivity implements View.OnClic
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 Editable value = match.getText();
-                                PhoneMatch phoneMatch = new PhoneMatch(phoneGroup, value.toString());
-                                DatabaseManager.getInstance().addPhoneMatch(phoneMatch);
+                                String pattern = value.toString();
+                                if (!TextUtils.isEmpty(pattern)) {
+                                    PhoneMatch phoneMatch = new PhoneMatch(phoneGroup, pattern);
+                                    DatabaseManager.getInstance().addPhoneMatch(phoneMatch);
+                                }
                             }
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {

@@ -39,12 +39,11 @@ public class PhoneMatchListAdapter extends SingleTypeAdapter<PhoneMatch> {
 
     @Override
     protected int[] getChildViewIds() {
-        return new int[] { R.id.tv_name };
+        return new int[] { R.id.tv_match };
     }
 
     @Override
     protected void update(int position, PhoneMatch phoneMatch) {
         setText(0, phoneMatch.getPattern());
     }
-
 }

@@ -10,6 +10,7 @@
     <string name="page_phone_groups">Groups</string>
     <string name="phone_group_column">Phone Group</string>
     <string name="error_loading_phone_groups">Loading phone groups failed</string>
+    <string name="error_loading_phone_matches">Loading phone matches failed</string>
     <string name="no_phone_groups">No Phone Groups</string>
 
     <!-- modify Phone Group strings -->

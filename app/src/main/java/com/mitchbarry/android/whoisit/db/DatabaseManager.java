@@ -47,6 +47,13 @@ public class DatabaseManager {
             Log.e(TAG, "Error when creating PhoneGroup", sqle);
         }
     }
+    public void updatePhoneGroup(PhoneGroup group) {
+        try {
+            getHelper().getPhoneGroupDao().update(group);
+        } catch (SQLException sqle) {
+            Log.e(TAG, "Error when updating PhoneGroup", sqle);
+        }
+    }
     public void deletePhoneGroup(PhoneGroup group) {
         try {
             getHelper().getPhoneGroupDao().delete(group);
@@ -69,6 +76,13 @@ public class DatabaseManager {
             getHelper().getPhoneMatchDao().create(match);
         } catch (SQLException sqle) {
             Log.e(TAG, "Error when creating PhoneMatch", sqle);
+        }
+    }
+    public void updatePhoneMatch(PhoneMatch match) {
+        try {
+            getHelper().getPhoneMatchDao().update(match);
+        } catch (SQLException sqle) {
+            Log.e(TAG, "Error when updating PhoneMatch", sqle);
         }
     }
     public void deletePhoneMatch(PhoneMatch match) {

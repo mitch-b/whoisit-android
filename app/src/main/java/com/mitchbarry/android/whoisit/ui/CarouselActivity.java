@@ -87,7 +87,7 @@ public class CarouselActivity extends BootstrapFragmentActivity {
             group.setName("Group 1");
             group.setRingtone("content://media/internal/audio/media/85");
             group.setVibrate(null);
-            PhoneMatch match = new PhoneMatch(group, "402522.*");
+            PhoneMatch match = new PhoneMatch(group, "402522*");
             DatabaseManager.getInstance().addPhoneGroup(group);
             DatabaseManager.getInstance().addPhoneMatch(match);
         }
