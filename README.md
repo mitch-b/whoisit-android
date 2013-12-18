@@ -1,4 +1,4 @@
-whoisit-android
+[![icon](https://raw.github.com/mitch-b/whoisit-android/master/app/src/main/res/drawable-mdpi/ic_launcher.png)](#-whoisit-android) whoisit-android
 ===============
 [![Build Status](https://travis-ci.org/mitch-b/whoisit-android.png?branch=master)](https://travis-ci.org/mitch-b/whoisit-android)
 
