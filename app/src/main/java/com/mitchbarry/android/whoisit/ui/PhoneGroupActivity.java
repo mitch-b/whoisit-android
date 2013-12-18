@@ -135,6 +135,8 @@ public class PhoneGroupActivity extends BootstrapActivity implements View.OnClic
             phoneGroup = new PhoneGroup(name);
             phoneGroup.setId(DatabaseManager.getInstance().addPhoneGroup(phoneGroup));
             phoneGroup.updateFromDB(this);
+            removePhoneMatchFragment();
+            addPhoneMatchFragment();
             return true;
         } catch (Exception e) {
             // this isn't great, but it'll do
@@ -163,6 +165,12 @@ public class PhoneGroupActivity extends BootstrapActivity implements View.OnClic
         args.putSerializable(PHONE_GROUP, phoneGroup);
         listFragment.setArguments(args);
         ft.replace(R.id.fragment_holder, listFragment, PHONE_MATCH_FRAGMENT);
+        ft.commit();
+    }
+    private void removePhoneMatchFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.remove(fm.findFragmentByTag(PHONE_MATCH_FRAGMENT);
         ft.commit();
     }
 
