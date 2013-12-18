@@ -20,6 +20,8 @@ This project also uses:
 
 If you have gradle installed, and your Android SDKs downloaded, you should be able to build & run the application either on a connected USB device, or the emulator (untested).
 
+See the [Wiki](https://github.com/mitch-b/whoisit-android/wiki) for information on how to use the app.
+
 Issues?
 --------------
 Please submit any issues in Github's [Issue Tracker](http://github.com/mitch-b/whoisit-android/issues).
