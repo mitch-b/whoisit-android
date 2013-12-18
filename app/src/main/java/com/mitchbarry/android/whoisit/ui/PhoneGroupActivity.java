@@ -170,7 +170,7 @@ public class PhoneGroupActivity extends BootstrapActivity implements View.OnClic
     private void removePhoneMatchFragment() {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.remove(fm.findFragmentByTag(PHONE_MATCH_FRAGMENT);
+        ft.remove(fm.findFragmentByTag(PHONE_MATCH_FRAGMENT));
         ft.commit();
     }
 
