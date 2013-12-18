@@ -7,7 +7,7 @@ Android application to modify Ringtone based on which number is calling.
 Getting Started
 --------------
 
-Built with [IntelliJ IDEA 13](http://jetbrains.com/idea/).
+Built with [IntelliJ IDEA 13](http://jetbrains.com/idea/) and [Android Bootstrap](http://androidbootstrap.com).
 
 Open IntelliJ IDEA (or Android Studio), choose 'Open Project', and navigate to this cloned repo.
 
@@ -19,17 +19,6 @@ This project also uses:
 - Android Build Tools 19
 
 If you have gradle installed, and your Android SDKs downloaded, you should be able to build & run the application either on a connected USB device, or the emulator (untested).
-
-
-Android Bootstrap
---------------
-This application is using an alpha stream of [Android Bootstrap](http://androidbootstrap.com), and with that comes an initial login screen.
-
-Use:
-- demo@androidbootstrap.com
-- android
-
-Not that logging in is essential to making the app work, because I've made no UI adjustments from the initial load.
 
 Issues?
 --------------
