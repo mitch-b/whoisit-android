@@ -21,6 +21,7 @@ import dagger.Provides;
                 CarouselActivity.class,
                 PhoneGroupActivity.class,
                 PhoneGroupListFragment.class,
+                PhoneMatchListFragment.class,
                 AboutActivity.class
         },
 

@@ -7,7 +7,10 @@
               android:paddingLeft="10dp"
               android:paddingRight="10dp"
               android:paddingTop="5dp"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:id="@+id/parentLayout"
+              android:focusable="true"
+              android:focusableInTouchMode="true">
 
     <LinearLayout
             android:orientation="horizontal"
@@ -26,6 +29,24 @@
                 android:textColor="@color/table_text_selector" />
     </LinearLayout>
 
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/phone_group_ringtone_label"
+                android:layout_gravity="center"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ringtone_button"
+                android:text="@string/phone_group_ringtone_none"/>
+
+    </LinearLayout>
+
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,11 +56,17 @@
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
-            <ListView
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/fragment_holder"
+                android:layout_weight="1" />
+            <!--<ListView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:id="@+id/list_matches"
-                android:layout_weight="1" />
+                android:layout_weight="1" />-->
             <Button
                 android:id="@+id/btnAddMatch"
                 android:layout_width="fill_parent"

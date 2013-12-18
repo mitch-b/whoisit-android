@@ -38,9 +38,9 @@ public class BootstrapPagerAdapter extends FragmentPagerAdapter {
         Bundle bundle = new Bundle();
         switch (position) {
         case 0:
-            PhoneGroupListFragment userListFragment = new PhoneGroupListFragment();
-            userListFragment.setArguments(bundle);
-            return userListFragment;
+            PhoneGroupListFragment groupListFragment = new PhoneGroupListFragment();
+            groupListFragment.setArguments(bundle);
+            return groupListFragment;
         default:
             return null;
         }

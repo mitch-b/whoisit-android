@@ -1,9 +1,11 @@
 package com.mitchbarry.android.whoisit.core;
 
+import android.content.Context;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
+import com.mitchbarry.android.whoisit.db.DatabaseManager;
 
 import java.io.Serializable;
 import java.util.List;
@@ -34,6 +36,15 @@ public class PhoneGroup implements Serializable {
 
     public PhoneGroup(String name) {
         this.name = name;
+    }
+
+    public void updateFromDB(Context context) {
+        DatabaseManager.init(context);
+        PhoneGroup group = DatabaseManager.getInstance().getPhoneGroup(this.id);
+        this.matches = group.getMatches();
+        this.name = group.getName();
+        this.ringtone = group.getRingtone();
+        this.vibrate = group.getVibrate();
     }
 
     public int getId() {

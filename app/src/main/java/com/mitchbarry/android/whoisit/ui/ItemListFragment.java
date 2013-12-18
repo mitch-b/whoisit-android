@@ -85,8 +85,14 @@ public abstract class ItemListFragment<E> extends Fragment
 
         if (!items.isEmpty())
             setListShown(true, false);
+        Bundle extras = getArguments();
+        getLoaderManager().initLoader(0, extras, this);
+    }
 
-        getLoaderManager().initLoader(0, null, this);
+    @Override
+    public void onResume() {
+        super.onResume();
+        forceRefresh();
     }
 
     @Override
@@ -121,6 +127,13 @@ public abstract class ItemListFragment<E> extends Fragment
                 onListItemClick((ListView) parent, view, position, id);
             }
         });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                onListItemLongClick(parent, view, position, id);
+                return true;
+            }
+        });
         progressBar = (ProgressBar) view.findViewById(id.pb_loading);
 
         emptyView = (TextView) view.findViewById(android.R.id.empty);
@@ -147,7 +160,7 @@ public abstract class ItemListFragment<E> extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu optionsMenu, MenuInflater inflater) {
-        inflater.inflate(R.menu.bootstrap, optionsMenu);
+        inflater.inflate(R.menu.list_menu, optionsMenu);
     }
 
     @Override
@@ -155,11 +168,11 @@ public abstract class ItemListFragment<E> extends Fragment
         if (!isUsable())
             return false;
         switch (item.getItemId()) {
-        case id.refresh:
-            forceRefresh();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case id.refresh:
+                forceRefresh();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -167,7 +180,9 @@ public abstract class ItemListFragment<E> extends Fragment
      * Force a refresh of the items displayed ignoring any cached items
      */
     protected void forceRefresh() {
-        Bundle bundle = new Bundle();
+        Bundle bundle = getArguments();
+        if (bundle == null)
+            bundle = new Bundle();
         bundle.putBoolean(FORCE_REFRESH, true);
         refresh(bundle);
     }
@@ -182,9 +197,7 @@ public abstract class ItemListFragment<E> extends Fragment
     private void refresh(final Bundle args) {
         if (!isUsable())
             return;
-
         getActionBarActivity().setSupportProgressBarIndeterminateVisibility(true);
-
         getLoaderManager().restartLoader(0, args, this);
     }
 
@@ -416,6 +429,16 @@ public abstract class ItemListFragment<E> extends Fragment
      * @param id
      */
     public void onListItemClick(ListView l, View v, int position, long id) {
+    }
+
+    /**
+     * Callback when a list view item is long clicked
+     * @param parent
+     * @param v
+     * @param position
+     * @param id
+     */
+    public void onListItemLongClick(AdapterView<?> parent, View v, int position, long id) {
     }
 
     /**

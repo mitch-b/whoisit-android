@@ -2,17 +2,23 @@ package com.mitchbarry.android.whoisit.ui;
 
 import static com.mitchbarry.android.whoisit.core.Constants.Extra.PHONE_GROUP;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.j256.ormlite.dao.ForeignCollection;
 import com.mitchbarry.android.whoisit.Injector;
 import com.mitchbarry.android.whoisit.R;
 import com.mitchbarry.android.whoisit.core.PhoneGroup;
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
+import com.mitchbarry.android.whoisit.core.PhoneMatch;
 import com.mitchbarry.android.whoisit.db.DatabaseManager;
 
 import java.util.Collections;
@@ -79,6 +85,29 @@ public class PhoneGroupListFragment  extends ItemListFragment<PhoneGroup> {
         PhoneGroup phoneGroup = ((PhoneGroup) l.getItemAtPosition(position));
 
         startActivity(new Intent(getActivity(), PhoneGroupActivity.class).putExtra(PHONE_GROUP, phoneGroup));
+    }
+
+    public void onListItemLongClick(AdapterView<?> parent, View v, int position, long id) {
+        final PhoneGroup group = (PhoneGroup) getListView().getItemAtPosition(position);
+        final Context context = v.getContext();
+        new AlertDialog.Builder(context)
+                .setTitle("Delete Group")
+                .setMessage(getString(R.string.delete_group_message))
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        DatabaseManager.init(context);
+                        ForeignCollection<PhoneMatch> matches = group.getMatches();
+                        for (PhoneMatch match : matches) {
+                            DatabaseManager.getInstance().deletePhoneMatch(match);
+                        }
+                        DatabaseManager.getInstance().deletePhoneGroup(group);
+                        forceRefresh();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Do nothing.
+            }
+        }).show();
     }
 
     @Override

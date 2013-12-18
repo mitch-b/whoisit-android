@@ -27,8 +27,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private Dao<PhoneMatch, Integer> phoneMatchDao = null;
 
     public DatabaseHelper(Context context) {
-        super (context, DATABASE_NAME, null, DATABASE_VERSION);
-        Log.d(TAG, "Database instance created");
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override

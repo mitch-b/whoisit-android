@@ -40,12 +40,24 @@ public class DatabaseManager {
         }
         return phoneGroups;
     }
-    public void addPhoneGroup(PhoneGroup group) {
+    public PhoneGroup getPhoneGroup(int id) {
+        PhoneGroup phoneGroup = null;
+        try {
+            phoneGroup = getHelper().getPhoneGroupDao().queryForId(id);
+        } catch (SQLException sqle) {
+            Log.e(TAG, "Failed to get PhoneGroup", sqle);
+        }
+        return phoneGroup;
+    }
+    public int addPhoneGroup(PhoneGroup group) {
+        int id = -1;
         try {
             getHelper().getPhoneGroupDao().create(group);
+            id = group.getId();
         } catch (SQLException sqle) {
             Log.e(TAG, "Error when creating PhoneGroup", sqle);
         }
+        return id;
     }
     public void updatePhoneGroup(PhoneGroup group) {
         try {
@@ -66,17 +78,25 @@ public class DatabaseManager {
         List<PhoneMatch> phoneMatches = null;
         try {
             phoneMatches = getHelper().getPhoneMatchDao().queryForAll();
+            if (phoneMatches.size() > 0) {
+                for (PhoneMatch match : phoneMatches) {
+
+                }
+            }
         } catch (SQLException sqle) {
             Log.e(TAG, "Failed to get PhoneMatches", sqle);
         }
         return phoneMatches;
     }
-    public void addPhoneMatch(PhoneMatch match) {
+    public int addPhoneMatch(PhoneMatch match) {
+        int id = -1;
         try {
             getHelper().getPhoneMatchDao().create(match);
+            id = match.getId();
         } catch (SQLException sqle) {
             Log.e(TAG, "Error when creating PhoneMatch", sqle);
         }
+        return id;
     }
     public void updatePhoneMatch(PhoneMatch match) {
         try {

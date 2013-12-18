@@ -1,18 +1,27 @@
 package com.mitchbarry.android.whoisit.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
+import android.text.Editable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 import com.github.kevinsawicki.wishlist.SingleTypeAdapter;
 import com.mitchbarry.android.whoisit.Injector;
 import com.mitchbarry.android.whoisit.R;
+import com.mitchbarry.android.whoisit.core.PhoneGroup;
 import com.mitchbarry.android.whoisit.core.PhoneMatch;
 import com.mitchbarry.android.whoisit.db.DatabaseManager;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,15 +55,22 @@ public class PhoneMatchListFragment extends ItemListFragment<PhoneMatch> {
     @Override
     public Loader<List<PhoneMatch>> onCreateLoader(int id, Bundle args) {
         final List<PhoneMatch> initialItems = items;
+        final PhoneGroup phoneGroup = (PhoneGroup) args.getSerializable(PHONE_GROUP);
         return new ThrowableLoader<List<PhoneMatch>>(getActivity(), items) {
             @Override
             public List<PhoneMatch> loadData() throws Exception {
-                DatabaseManager.init(getContext());
                 try {
-                    List<PhoneMatch> latest = null;
-
-                    if(getActivity() != null)
-                        latest = DatabaseManager.getInstance().getPhoneMatches();
+                    List<PhoneMatch> latest = new ArrayList<PhoneMatch>();
+                    if(getActivity() != null) {
+                        if (phoneGroup != null) {
+                            // if provided with a PhoneGroup, only pull
+                            // matches associated with it
+                            phoneGroup.updateFromDB(getContext());
+                            for (PhoneMatch match : phoneGroup.getMatches()) {
+                                latest.add(match);
+                            }
+                        }
+                    }
 
                     if (latest != null)
                         return latest;
@@ -73,8 +89,26 @@ public class PhoneMatchListFragment extends ItemListFragment<PhoneMatch> {
     }
 
     public void onListItemClick(ListView l, View v, int position, long id) {
-        PhoneMatch phoneMatch = ((PhoneMatch) l.getItemAtPosition(position));
-        // TODO: start dialog here
+        // PhoneMatch phoneMatch = ((PhoneMatch) l.getItemAtPosition(position));
+    }
+
+    public void onListItemLongClick(AdapterView<?> parent, View v, int position, long id) {
+        final PhoneMatch match = (PhoneMatch) getListView().getItemAtPosition(position);
+        final Context context = v.getContext();
+        new AlertDialog.Builder(context)
+                .setTitle("Delete Match")
+                .setMessage(getString(R.string.delete_match_message))
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        DatabaseManager.init(context);
+                        DatabaseManager.getInstance().deletePhoneMatch(match);
+                        forceRefresh();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Do nothing.
+            }
+        }).show();
     }
 
     @Override

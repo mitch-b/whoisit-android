@@ -8,9 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
+import android.view.*;
 
 
 import android.widget.Toast;
@@ -82,15 +80,6 @@ public class CarouselActivity extends BootstrapFragmentActivity {
         initScreen();
 
         DatabaseManager.init(this);
-        if (DatabaseManager.getInstance().getPhoneGroups().size() == 0) {
-            PhoneGroup group = new PhoneGroup();
-            group.setName("Group 1");
-            group.setRingtone("content://media/internal/audio/media/85");
-            group.setVibrate(null);
-            PhoneMatch match = new PhoneMatch(group, "402522*");
-            DatabaseManager.getInstance().addPhoneGroup(group);
-            DatabaseManager.getInstance().addPhoneMatch(match);
-        }
     }
 
     @Override
@@ -106,6 +95,12 @@ public class CarouselActivity extends BootstrapFragmentActivity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.groups, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
 
     private void initScreen() {
