@@ -45,17 +45,18 @@ android {
         minSdkVersion 8
         targetSdkVersion 19
         versionCode = 1
-        versionName = 'alpha'
+        versionName = '1.0.0'
+        appName = 'whoisit'
     }
 
-    // signingConfigs {
-        // release {
-            // storeFile file(System.getenv('ANDROID_KEYSTORE_PATH'))
-            // storePassword System.getenv('ANDROID_STORE_PASS')
-            // keyAlias System.getenv('ANDROID_KEY_ALIAS')
-            // keyPassword System.getenv('ANDROID_KEY_PASS')
-        // }
-    // }
+    signingConfigs {
+        release {
+            storeFile file(System.getenv('ANDROID_KEYSTORE_PATH'))
+            storePassword System.getenv('ANDROID_STORE_PASS')
+            keyAlias System.getenv('ANDROID_KEY_ALIAS')
+            keyPassword System.getenv('ANDROID_KEY_PASS')
+        }
+    }
 
     buildTypes {
         debug {
@@ -64,12 +65,27 @@ android {
             // zipAlign false // this is default for debug
         }
         release {
-            // runProguard true
-            // proguardFile '..\proguard.cfg'
-            // signingConfig signingConfigs.release
-            // zipAlign true // this is default for release
-            // testPackageName 'com.mitchbarry.android.whoisit.tests'
-            // testInstrumentationRunner 'android.test.InstrumentationTestRunner' // this is the default
+            signingConfig signingConfigs.release
+            debuggable false
+            zipAlign true // this is default for release
+        }
+        android.applicationVariants.all { variant ->
+            def apk = variant.packageApplication.outputFile;
+            def name = apk.name;
+            if (variant.buildType.name == "release") {
+                name = apk.name.replace(".apk", "-v" + defaultConfig.versionName + "-RELEASE.apk");
+            } else {
+                name = apk.name.replace(".apk", "-v" + defaultConfig.versionName + "-SNAPSHOT.apk");
+            }
+
+            name = name.replace("app", defaultConfig.appName);
+            name = name.replace("-" + variant.buildType.name, "");
+            def versionFolderPath = apk.parentFile.toString() + File.separator + "v" + defaultConfig.versionName;
+            variant.packageApplication.outputFile = new File(versionFolderPath, name);
+
+            if (variant.zipAlign) {
+                variant.zipAlign.outputFile = new File (versionFolderPath, name.replace("-unaligned", ""));
+            }
         }
     }
 }
