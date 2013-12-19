@@ -65,7 +65,7 @@ android {
             // zipAlign false // this is default for debug
         }
         release {
-            signingConfig signingConfigs.release
+            //signingConfig signingConfigs.release // causes Travis CI to fail
             debuggable false
             zipAlign true // this is default for release
         }
