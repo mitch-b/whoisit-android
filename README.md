@@ -2,6 +2,8 @@
 ===============
 [![Build Status](https://travis-ci.org/mitch-b/whoisit-android.png?branch=master)](https://travis-ci.org/mitch-b/whoisit-android)
 
+[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.mitchbarry.android.whoisit)
+
 Android application to modify Ringtone based on which number is calling.
 
 Getting Started
