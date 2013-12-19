@@ -15,7 +15,7 @@ This project also uses:
 
 - [Gradle](http://gradle.org/) builds.
 - Android minSdkVersion 8
-- Android targetSdkVersion 18
+- Android targetSdkVersion 19
 - Android Build Tools 19
 
 If you have gradle installed, and your Android SDKs downloaded, you should be able to build & run the application either on a connected USB device, or the emulator (untested).
