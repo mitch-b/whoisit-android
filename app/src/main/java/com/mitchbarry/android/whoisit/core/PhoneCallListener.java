@@ -6,27 +6,22 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.PowerManager;
-import android.os.Vibrator;
 import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.view.MotionEvent;
-import android.view.View;
 
 import java.io.IOException;
 
-public class PhoneCallListener extends PhoneStateListener implements View.OnTouchListener {
+public class PhoneCallListener extends PhoneStateListener {
     private final String TAG = this.getClass().getSimpleName();
 
     private Context context = null;
     private int PREVIOUS_CALL_STATE;
     private static AudioManager audioManager;
     private static MediaPlayer mediaPlayer;
-    private static Vibrator vibrator;
     private static int ringVolume = -100;
     private static int alarmVolume = -100;
     private static boolean audioStreamsModified = false;
-    private static boolean vibrateModified = false;
     private static PhoneCallListener phoneCallListenerInstance;
 
     public PhoneCallListener(Context context) {
@@ -50,7 +45,6 @@ public class PhoneCallListener extends PhoneStateListener implements View.OnTouc
                 case TelephonyManager.CALL_STATE_IDLE:
                     killMediaPlayer();
                     resetAudioStreams();
-                    resetCustomVibrate();
                     break;
                 case TelephonyManager.CALL_STATE_OFFHOOK:
                     killMediaPlayer();
@@ -118,20 +112,6 @@ public class PhoneCallListener extends PhoneStateListener implements View.OnTouc
         PREVIOUS_CALL_STATE = state;
     }
 
-    private String getReadableStateName(int state)
-    {
-        switch (state) {
-            case TelephonyManager.CALL_STATE_IDLE:
-                return "IDLE";
-            case TelephonyManager.CALL_STATE_OFFHOOK:
-                return "OFF_HOOK";
-            case TelephonyManager.CALL_STATE_RINGING:
-                return "RINGING";
-            default:
-                return "???";
-        }
-    }
-
     private void killMediaPlayer() {
         if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying())
@@ -158,16 +138,5 @@ public class PhoneCallListener extends PhoneStateListener implements View.OnTouc
                     AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         }
         audioStreamsModified = false;
-    }
-    private void resetCustomVibrate() {
-        if (vibrateModified) {
-            vibrator.cancel();
-        }
-        vibrateModified = false;
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        return false;
     }
 }
