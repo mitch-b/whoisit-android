@@ -8,7 +8,6 @@ import com.j256.ormlite.table.DatabaseTable;
 import com.mitchbarry.android.whoisit.db.DatabaseManager;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by Mitchell on 12/12/13.
@@ -18,6 +17,7 @@ public class PhoneGroup implements Serializable {
     public static final String NAME_FIELD_NAME = "name";
     public static final String RINGTONE_FIELD_NAME = "ringtone";
     public static final String VIBRATE_FIELD_NAME = "vibrate";
+    public static final String RING_SMS_FIELD_NAME = "ringSms";
 
     @DatabaseField(generatedId = true)
     private int id;
@@ -27,6 +27,9 @@ public class PhoneGroup implements Serializable {
     private String ringtone;
     @DatabaseField(columnName = VIBRATE_FIELD_NAME, canBeNull = true)
     private String vibrate;
+    @DatabaseField(columnName = RING_SMS_FIELD_NAME, canBeNull = true)
+    private Boolean ringSms;
+
     @ForeignCollectionField(eager = true)
     ForeignCollection<PhoneMatch> matches;
 
@@ -45,6 +48,7 @@ public class PhoneGroup implements Serializable {
         this.name = group.getName();
         this.ringtone = group.getRingtone();
         this.vibrate = group.getVibrate();
+        this.ringSms = group.getRingSms();
     }
 
     public int getId() {
@@ -77,6 +81,14 @@ public class PhoneGroup implements Serializable {
 
     public void setVibrate(String vibrate) {
         this.vibrate = vibrate;
+    }
+
+    public Boolean getRingSms() {
+        return ringSms;
+    }
+
+    public void setRingSms(Boolean ringSms) {
+        this.ringSms = ringSms;
     }
 
     public ForeignCollection<PhoneMatch> getMatches() {

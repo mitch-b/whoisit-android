@@ -19,9 +19,9 @@ import java.util.List;
  */
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-    public static final String TAG = "DatabaseHelper";
+    private final String TAG = this.getClass().getSimpleName();
     public static final String DATABASE_NAME = "WhoIsIt.sqlite";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private Dao<PhoneGroup, Integer> phoneGroupDao = null;
     private Dao<PhoneMatch, Integer> phoneMatchDao = null;
@@ -47,9 +47,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             // initial database
         }
 
-//        if (oldVersion < 2 && newVersion >= 2) {
-//
-//        }
+        if (oldVersion < 2 && newVersion >= 2) {
+            // added ringSms column
+            sqlStatements.add("ALTER TABLE `phoneGroups` ADD COLUMN ringSms BOOLEAN DEFAULT 0;");
+        }
 
         try {
             for (String sql : sqlStatements) {

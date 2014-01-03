@@ -10,16 +10,13 @@ import android.os.Vibrator;
 import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.Log;
-import com.j256.ormlite.dao.ForeignCollection;
-import com.mitchbarry.android.whoisit.db.DatabaseManager;
+import android.view.MotionEvent;
+import android.view.View;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.regex.PatternSyntaxException;
 
-public class PhoneCallListener extends PhoneStateListener {
-    private static final String TAG = "PhoneCallListener";
+public class PhoneCallListener extends PhoneStateListener implements View.OnTouchListener {
+    private final String TAG = this.getClass().getSimpleName();
 
     private Context context = null;
     private int PREVIOUS_CALL_STATE;
@@ -34,7 +31,7 @@ public class PhoneCallListener extends PhoneStateListener {
 
     public PhoneCallListener(Context context) {
         this.context = context;
-        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
     public static PhoneCallListener getPhoneCallListener(Context context)
@@ -46,7 +43,9 @@ public class PhoneCallListener extends PhoneStateListener {
 
     public void onCallStateChanged(int state, String incomingNumber) {
         super.onCallStateChanged(state, incomingNumber);
-        if (state != PREVIOUS_CALL_STATE) {
+        boolean silentMode = this.audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT ||
+                this.audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE;
+        if (state != PREVIOUS_CALL_STATE && !silentMode) {
             switch (state) {
                 case TelephonyManager.CALL_STATE_IDLE:
                     killMediaPlayer();
@@ -84,27 +83,8 @@ public class PhoneCallListener extends PhoneStateListener {
 
                     // if this # does not already have a custom ringtone, check phone matches
                     if (!customRingtoneSet) {
-                        DatabaseManager.init(context);
-                        List<PhoneGroup> groups = DatabaseManager.getInstance().getPhoneGroups();
-                        if (groups != null) {
-                            for (PhoneGroup group : groups) {
-                                ForeignCollection<PhoneMatch> matches = group.getMatches();
-                                if (matches.size() > 0) {
-                                    for (PhoneMatch match : matches) {
-                                        try {
-                                            if (incomingNumber.matches(match.getPattern().replace("*", ".*"))) {
-                                                matchedGroup = group;
-                                                break;
-                                            }
-                                        } catch (PatternSyntaxException pse) {
-                                            Log.e(TAG, "Invalid pattern syntax for match", pse);
-                                        }
-                                    }
-                                }
-                                if (matchedGroup != null)
-                                    break;
-                            }
-                        }
+                        WhoIsItMatcher.init(context);
+                        matchedGroup = WhoIsItMatcher.findMatchingGroup(incomingNumber);
                     }
 
                     if (matchedGroup != null) {
@@ -162,7 +142,7 @@ public class PhoneCallListener extends PhoneStateListener {
     }
 
     private void resetAudioStreams() {
-        // audioStreamsModified is only set to true in onCallStateChanged if
+        // audioStreamsModified is only set to true if a match was found
         if (audioStreamsModified) {
             audioManager.setStreamMute(AudioManager.STREAM_RING, false);
             audioManager.setStreamVolume(
@@ -184,5 +164,10 @@ public class PhoneCallListener extends PhoneStateListener {
             vibrator.cancel();
         }
         vibrateModified = false;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
     }
 }

@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
@@ -35,6 +37,7 @@ public class PhoneGroupActivity extends BootstrapActivity implements View.OnClic
     @InjectView(R.id.edit_name) protected EditText name;
     @InjectView(R.id.btnAddMatch) protected Button btnAddMatch;
     @InjectView(R.id.ringtone_button) protected Button btnRingtone;
+    @InjectView(R.id.chkPlayForSms) protected CheckBox chkPlayForSms;
     @InjectView(R.id.parentLayout) protected LinearLayout parentLayout;
 
     protected PhoneGroup phoneGroup;
@@ -98,9 +101,9 @@ public class PhoneGroupActivity extends BootstrapActivity implements View.OnClic
         super.onPause();
         String newName = name.getText().toString();
         if (phoneGroup != null) {
-            if (!TextUtils.isEmpty(newName)) {
+            if (!TextUtils.isEmpty(newName))
                 phoneGroup.setName(newName);
-            }
+            phoneGroup.setRingSms(chkPlayForSms.isChecked());
             DatabaseManager.getInstance().updatePhoneGroup(phoneGroup);
         } else {
             validatePhoneGroup();
@@ -133,6 +136,7 @@ public class PhoneGroupActivity extends BootstrapActivity implements View.OnClic
     private boolean createNewPhoneGroup(String name) {
         try {
             phoneGroup = new PhoneGroup(name);
+            phoneGroup.setRingSms(chkPlayForSms.isChecked());
             phoneGroup.setId(DatabaseManager.getInstance().addPhoneGroup(phoneGroup));
             phoneGroup.updateFromDB(this);
             removePhoneMatchFragment();
@@ -150,6 +154,7 @@ public class PhoneGroupActivity extends BootstrapActivity implements View.OnClic
             name.setText(phoneGroup.getName());
             if (!TextUtils.isEmpty(phoneGroup.getRingtone()))
                 btnRingtone.setText(RingtoneManager.getRingtone(this, Uri.parse(phoneGroup.getRingtone())).getTitle(this));
+            chkPlayForSms.setChecked(phoneGroup.getRingSms());
         } else {
             btnRingtone.setEnabled(false);
             btnAddMatch.setEnabled(false);
@@ -187,7 +192,7 @@ public class PhoneGroupActivity extends BootstrapActivity implements View.OnClic
                 final EditText match = new EditText(this);
                 match.setHint(getString(R.string.add_match_hint));
                 match.setInputType(InputType.TYPE_CLASS_PHONE);
-                new AlertDialog.Builder(this)
+                AlertDialog dialog = new AlertDialog.Builder(this)
                         .setTitle("Phone Match")
                         .setMessage(getString(R.string.add_match_message))
                         .setView(match)
@@ -208,7 +213,11 @@ public class PhoneGroupActivity extends BootstrapActivity implements View.OnClic
                     public void onClick(DialogInterface dialog, int whichButton) {
                         // Do nothing.
                     }
-                }).show();
+                }).create();
+                dialog.getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+                );
+                dialog.show();
                 break;
             case R.id.ringtone_button:
                 Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);

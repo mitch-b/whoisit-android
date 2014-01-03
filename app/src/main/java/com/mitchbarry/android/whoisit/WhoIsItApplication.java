@@ -35,18 +35,14 @@ public class WhoIsItApplication extends Application {
     public WhoIsItApplication(final Context context) {
         this();
         attachBaseContext(context);
-
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-
         instance = this;
-
         // Perform injection
         Injector.init(getRootModule(), this);
-
     }
 
     private Object getRootModule() {

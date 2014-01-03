@@ -23,6 +23,7 @@
     <string name="btn_add_match">Add Match</string>
     <string name="no_phone_matches">No Phone Matches</string>
     <string name="ringtone_select_message">Choose a ringtone for this phone group</string>
+    <string name="play_for_sms">Play on SMS Notification</string>
 
     <!-- dialog_add_match_view -->
     <string name="add_match_message">Add a new match here. To place a wildcard, use an asterisk: *. Phone numbers are matched on sample: 8005551234 (800–555–1234)</string>

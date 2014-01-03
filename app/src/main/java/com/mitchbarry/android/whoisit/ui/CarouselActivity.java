@@ -5,16 +5,15 @@ package com.mitchbarry.android.whoisit.ui;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
 
-
-import android.widget.Toast;
 import com.mitchbarry.android.whoisit.R;
 import com.mitchbarry.android.whoisit.core.PhoneGroup;
-import com.mitchbarry.android.whoisit.core.PhoneMatch;
 import com.mitchbarry.android.whoisit.db.DatabaseManager;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -60,14 +59,14 @@ public class CarouselActivity extends BootstrapFragmentActivity {
 
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                getSupportActionBar().setTitle(mTitle);
+                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                getSupportActionBar().setTitle(mDrawerTitle);
+                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
 

@@ -12,7 +12,7 @@ import java.util.List;
  * Created by Mitchell on 12/13/13.
  */
 public class DatabaseManager {
-    public static final String TAG = "DatabaseManager";
+    private final String TAG = this.getClass().getSimpleName();
 
     static private DatabaseManager instance;
     private DatabaseHelper helper;

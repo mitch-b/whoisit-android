@@ -19,6 +19,7 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
                 android:text="@string/phone_group_name_label"/>
         <EditText
                 android:id="@+id/edit_name"
@@ -37,6 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/phone_group_ringtone_label"
+                android:textColor="@color/black"
                 android:layout_gravity="center"/>
 
         <Button
@@ -46,6 +48,15 @@
                 android:text="@string/phone_group_ringtone_none"/>
 
     </LinearLayout>
+
+
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/play_for_sms"
+            android:id="@+id/chkPlayForSms"
+            android:textColor="@color/black"
+            />
 
     <TextView
             android:layout_width="wrap_content"
